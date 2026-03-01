@@ -1,0 +1,62 @@
+require('dotenv').config();
+const { ethers } = require('ethers');
+const axios = require('axios');
+const chalk = require('chalk');
+const ora = require('ora');
+
+const RPC_URL = process.env.RPC_URL || 'https://phoenix-rpc.plumenetwork.xyz';
+const FAUCET_URL = process.env.FAUCET_URL || 'https://faucet.plumenetwork.xyz';
+
+async function claimGOON() {
+  console.log(chalk.cyan.bold('\n╔═══════════════════════════════════════╗'));
+  console.log(chalk.cyan.bold('║   Claim GOON Tokens from Faucet      ║'));
+  console.log(chalk.cyan.bold('╚═══════════════════════════════════════╝\n'));
+
+  const spinner = ora('Initializing...').start();
+
+  try {
+    // Get wallet address
+    const { prompt } = require('enquirer');
+    const { address } = await prompt({
+      type: 'input',
+      name: 'address',
+      message: 'Enter your wallet address:',
+      validate: (value) => {
+        if (!ethers.isAddress(value)) {
+          return 'Please enter a valid Ethereum address';
+        }
+        return true;
+      }
+    });
+
+    spinner.text = 'Claiming GOON tokens from faucet...';
+    spinner.start();
+
+    // Claim GOON from faucet
+    const response = await axios.post(`${FAUCET_URL}/goon`, {
+      address: address
+    });
+
+    spinner.succeed(chalk.green('GOON tokens claimed successfully!'));
+    
+    console.log(chalk.green('\n✅ Transaction Details:'));
+    console.log(chalk.cyan(`   Address: ${address}`));
+    console.log(chalk.cyan(`   Status: ${response.data.status || 'Success'}`));
+    if (response.data.txHash) {
+      console.log(chalk.cyan(`   Transaction Hash: ${response.data.txHash}`));
+    }
+    if (response.data.amount) {
+      console.log(chalk.cyan(`   Amount: ${response.data.amount} GOON`));
+    }
+
+  } catch (error) {
+    spinner.fail(chalk.red('Failed to claim GOON tokens'));
+    console.log(chalk.red(`\n❌ Error: ${error.message}`));
+    if (error.response) {
+      console.log(chalk.red(`   Status: ${error.response.status}`));
+      console.log(chalk.red(`   Message: ${error.response.data?.message || 'Unknown error'}`));
+    }
+  }
+}
+
+claimGOON().catch(console.error);

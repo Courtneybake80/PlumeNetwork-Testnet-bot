@@ -1,0 +1,37 @@
+{
+  "name": "plume-network-testnet-bot",
+  "version": "1.0.0",
+  "description": "Bot to interact with Plume Network Testnet faucets and manage transactions automatically",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "claim-eth": "node scripts/claimEth.js",
+    "claim-goon": "node scripts/claimGoon.js",
+    "daily-checkin": "node scripts/dailyCheckin.js",
+    "auto-mint": "node scripts/autoMint.js",
+    "auto-stake": "node scripts/autoStake.js",
+    "auto-swap": "node scripts/autoSwap.js"
+  },
+  "keywords": [
+    "plume",
+    "testnet",
+    "bot",
+    "faucet",
+    "blockchain"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "ethers": "^6.9.0",
+    "axios": "^1.6.2",
+    "chalk": "^4.1.2",
+    "boxen": "^7.1.1",
+    "enquirer": "^2.4.1",
+    "ora": "^5.4.1",
+    "cli-table3": "^0.6.5"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.5"
+  }
+}
